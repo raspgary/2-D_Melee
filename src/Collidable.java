@@ -36,8 +36,4 @@ public class Collidable
         return (int)rect.getY();
     }
 
-
-
-
-
 }
