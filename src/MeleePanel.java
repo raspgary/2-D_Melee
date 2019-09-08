@@ -1,21 +1,14 @@
-
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
-
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
 import javax.imageio.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.Set;
 import javax.sound.midi.*;
-import java.applet.*;
-import java.net.URL;
 
+// class that loads graphics, listens to keys, and other game functions
 public class MeleePanel extends JPanel implements KeyListener, Runnable
 {
     private MeleeGame game = null;
@@ -23,8 +16,6 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
     private BufferedImage buffer 	= null;
     private BufferedImage blue_lblock;
     private BufferedImage blue_rblock;
-    private BufferedImage blue_lduck;
-    private BufferedImage blue_rduck;
     private BufferedImage blue_ljump;
     private BufferedImage blue_rjump;
     private BufferedImage blue_lkick;
@@ -35,8 +26,6 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
     private BufferedImage blue_rpunch;
     private BufferedImage red_lblock;
     private BufferedImage red_rblock;
-    private BufferedImage red_lduck;
-    private BufferedImage red_rduck;
     private BufferedImage red_ljump;
     private BufferedImage red_rjump;
     private BufferedImage red_lkick;
@@ -51,7 +40,7 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
     private BufferedImage blue_lhit;
     private BufferedImage red_rhit;
     private BufferedImage red_lhit;
-   private BufferedImage explode_u;
+    private BufferedImage explode_u;
     private BufferedImage explode_r;
     private BufferedImage explode_l;
     private BufferedImage explode_d;
@@ -79,66 +68,65 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
     public static final Set<Character> pressed = new HashSet<Character>();
 
     public MeleePanel() throws MalformedURLException {
-        game = new MeleeGame();
-        setSize(1200,960);
-        buffer = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_4BYTE_ABGR);
-        setFocusable(true);
-        SoundEffect.init();
-        //bmusic.loop();
+		game = new MeleeGame();
+		setSize(1200,960);
+		buffer = new BufferedImage(getWidth(),getHeight(),BufferedImage.TYPE_4BYTE_ABGR);
+		setFocusable(true);
+		SoundEffect.init();
 
-       try
-       {
-		blue_lblock=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_b.png"));
-		blue_rblock=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_b.png"));
-		blue_ljump=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_j.png"));
-		blue_rjump=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_j.png"));
-		blue_lkick=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_k2.png"));
-		blue_rkick=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_k2.png"));
-		blue_lnorm=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_n.png"));
-		blue_rnorm=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_n.png"));
-		blue_lpunch=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_p.png"));
-		blue_rpunch=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_p.png"));
-        blue_rhit=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_h.png"));
-        blue_lhit=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_h.png"));
-
-		red_lblock=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_b.png"));
-		red_rblock=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_b.png"));
-		red_ljump=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_j.png"));
-		red_rjump=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_j.png"));
-		red_lkick=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_k2.png"));
-		red_rkick=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_k2.png"));
-		red_lnorm=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_n.png"));
-		red_rnorm=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_n.png"));
-		red_lpunch=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_p.png"));
-		red_rpunch=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_p.png"));
-        red_lhit=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_h.png"));
-        red_rhit=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_h.png"));
-		rock=ImageIO.read(getClass().getResourceAsStream("Images\\rock.png"));
-        explode_r=ImageIO.read(getClass().getResourceAsStream("Images\\explode_r.png"));
-        explode_u=ImageIO.read(getClass().getResourceAsStream("Images\\explode_u.png"));
-        explode_d=ImageIO.read(getClass().getResourceAsStream("Images\\explode_d.png"));
-        explode_l=ImageIO.read(getClass().getResourceAsStream("Images\\explode_l.png"));
-
-        Sequence song = MidiSystem.getSequence(this.getClass().getClassLoader().getResource("Sounds_files\\Pokemon2.mid"));
-        songPlayer = MidiSystem.getSequencer();
-        songPlayer.setSequence(song);
-        songPlayer.open();
-        songPlayer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
-        songPlayer.start();
-
-
-	}
-	catch(Exception e)
-	{
-		System.out.print("Error Loading Images:");
-		e.printStackTrace();
-	}
-	addKeyListener(this);
-        Thread t = new Thread(this);
-        t.start();
+		// load graphics
+		try
+    	{
+			blue_lblock=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_b.png"));
+			blue_rblock=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_b.png"));
+			blue_ljump=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_j.png"));
+			blue_rjump=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_j.png"));
+			blue_lkick=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_k2.png"));
+			blue_rkick=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_k2.png"));
+			blue_lnorm=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_n.png"));
+			blue_rnorm=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_n.png"));
+			blue_lpunch=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_p.png"));
+			blue_rpunch=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_p.png"));
+			blue_rhit=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_right_h.png"));
+			blue_lhit=ImageIO.read(getClass().getResourceAsStream("Images\\blue_dude_left_h.png"));
+			
+			red_lblock=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_b.png"));
+			red_rblock=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_b.png"));
+			red_ljump=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_j.png"));
+			red_rjump=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_j.png"));
+			red_lkick=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_k2.png"));
+			red_rkick=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_k2.png"));
+			red_lnorm=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_n.png"));
+			red_rnorm=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_n.png"));
+			red_lpunch=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_p.png"));
+			red_rpunch=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_p.png"));
+			red_lhit=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_left_h.png"));
+			red_rhit=ImageIO.read(getClass().getResourceAsStream("Images\\red_dude_right_h.png"));
+			rock=ImageIO.read(getClass().getResourceAsStream("Images\\rock.png"));
+			explode_r=ImageIO.read(getClass().getResourceAsStream("Images\\explode_r.png"));
+			explode_u=ImageIO.read(getClass().getResourceAsStream("Images\\explode_u.png"));
+			explode_d=ImageIO.read(getClass().getResourceAsStream("Images\\explode_d.png"));
+			explode_l=ImageIO.read(getClass().getResourceAsStream("Images\\explode_l.png"));
+			
+			// play background music
+			Sequence song = MidiSystem.getSequence(this.getClass().getClassLoader().getResource("Sounds_files\\Pokemon2.mid"));
+			songPlayer = MidiSystem.getSequencer();
+			songPlayer.setSequence(song);
+			songPlayer.open();
+			songPlayer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+			songPlayer.start();
+		}
+		catch(Exception e)
+		{
+			System.out.print("Error Loading Images:");
+			e.printStackTrace();
+		}
+		addKeyListener(this);
+		Thread t = new Thread(this);
+		t.start();
     }
 
-
+    // continuously loads graphics and updates game data
     public void run()
     {
         try
@@ -160,18 +148,21 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
         }
     }
 
-
+    // loads the games graphics
     public void paint(Graphics s) {
+    	
         Graphics g = buffer.getGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0,0,getWidth(),getHeight());
 
+        // coordinates of entire world beyond shown window
         int worldX = game.getWorldX();
         int worldY = game.getWorldY();
 
         Player player = game.getPlayer1();
         Player player2 = game.getPlayer2();
 
+        // the end of the map
         if(worldY<=0){
             if(game.getPlayer1().getLives()>game.getPlayer2().getLives()){
                 game.setStatus(game.BLUE_WINS);
@@ -192,6 +183,7 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
             }
         }
 
+        // check if players should respawn after a life is lsot
         if(dead && System.currentTimeMillis()>=deadTime_BLUE){
             dead=false;
             tempx=0;
@@ -218,6 +210,7 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
         g.setColor(new Color(63, 191, 255));
         g.fillRect(0, 0,getWidth(), getHeight());
 
+        // display static platforms
         for(int r=startRow; r<=endRow;r++){
             for(int c=startColumn; c<=endColumn; c++)
             {
@@ -231,6 +224,7 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
             }
         }
 
+        // display moving platforms
         for(MovingPlatform w: game.getMovingPlat())
         {
 
@@ -239,6 +233,7 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
         }
 
 
+        // draw the current state of blue player
         if(player.getColor() == Player.BLUE && player.getMoveStatus()==Player.MOVE_RIGHT && player.getHitStatus()==Player.NOT_HIT && !player.getIsDead()){
            g.drawImage(blue_rnorm, player.getWorldX(), player.getWorldY()-worldY, null);
         }
@@ -283,6 +278,9 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
         else if(player.getColor() == Player.BLUE && player.getHitStatus()==Player.IS_HIT_RIGHT  && !player.getIsDead()){
             g.drawImage(blue_rhit, player.getWorldX(), player.getWorldY()-worldY, null);
         }
+        
+        // checks if blue player exceeds damage cap or goes out of bounds
+        // set to dead if true and shows explode image
         if(player.getDamage()>=Player.DAMAGE_CAP){
             if(!dead) {
                 tempx = player.getWorldX() - 85;
@@ -348,6 +346,7 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
             }
         }
 
+        // draw the current state of blue player
         if(player2.getColor() == Player.RED && player2.getMoveStatus()==Player.MOVE_RIGHT && player2.getHitStatus()==Player.NOT_HIT && !player2.getIsDead()){
             g.drawImage(red_rnorm, player2.getWorldX(), player2.getWorldY()-worldY, null);
         }
@@ -387,7 +386,9 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
         else if(player2.getColor() == Player.RED  && player2.getHitStatus()==Player.IS_HIT_RIGHT  && !player2.getIsDead()){
             g.drawImage(red_rhit, player2.getWorldX(), player2.getWorldY()-worldY, null);
         }
-
+        
+        // checks if blue player exceeds damage cap or goes out of bounds
+        // set to dead if true and shows explode image
         if(player2.getDamage()>=Player.DAMAGE_CAP){
             if(!dead2) {
                 tempx2 = player2.getWorldX() - 85;
@@ -447,34 +448,23 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
             }
             if(dead2) {
                 g.drawImage(explode_l, tempx2, tempy2, null);
-              //  player2.setLives(player2.getLives()-1);
-                //System.out.println("P2 DEAD");
-                //game.setStatus(MeleeGame.BLUE_WINS);
-
             }
         }
 
         g.setColor(Color.BLACK);
-       // g.drawRect(player.getWorldX(), player.getWorldY()-worldY, (int)player.getRectangle().getWidth(), (int)player.getRectangle().getHeight());
         if(player.getMoveRect()!=null) {
             g.setColor(Color.GREEN);
-            //g.drawRect((int) player.getMoveRect().getX(), (int) (player.getMoveRect().getY() - worldY), (int) player.getMoveRect().getWidth(), (int) player.getMoveRect().getHeight());
         }
 
         g.setColor(Color.BLACK);
-       // g.drawRect(player2.getWorldX(), player2.getWorldY()-worldY, (int)player2.getRectangle().getWidth(), (int)player2.getRectangle().getHeight());
         if(player2.getMoveRect()!=null) {
             g.setColor(Color.GREEN);
-            //g.drawRect((int) player2.getMoveRect().getX(), (int) (player2.getMoveRect().getY() - worldY), (int) player2.getMoveRect().getWidth(), (int) player2.getMoveRect().getHeight());
         }
-        /*if(player.getMoveStatus()==Player.DEAD)
-        {
-            player.setRectangle(new Rectangle(0,0,0,0));
-        }*/
 
         Font f2 = new Font("Times New Roman", Font.BOLD, 20);
         g.setFont(f2);
 
+        // shows number of lives for each player
         g.setColor(Color.RED);
         for(int x=0; x<player2.getLives(); x++){
             g.fillOval(902+x*16, 949, 8, 8);
@@ -516,6 +506,8 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
             g.drawString(String.valueOf(player.getDamage()) + "%", 316, 923);
             g.drawString(String.valueOf(player.getDamage()) + "%", 316, 925);
         }
+        
+        // changes color of damage more red as percentage goes up
 
         int colorMOD2=(int)(player2.getDamage()*1.5);
         if(colorMOD2>=255){
@@ -546,6 +538,7 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
             g.drawString(String.valueOf(player.getDamage()) + "%", 315, 924);
         }
 
+        // instructions to reset game
         if(game.getStatus()==game.TIE){
             Font f6 = new Font("Times New Roman", Font.BOLD, 50);
             g.setFont(f6);
@@ -572,9 +565,9 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
         s.drawImage(buffer,0,0,null);
     }
 
+    // get key codes
     public void keyPressed(KeyEvent e)
     {
-        //System.out.println("key"+e.getKeyChar());
         if(e.getKeyCode()>255) {
             return;
         }
@@ -589,7 +582,8 @@ public class MeleePanel extends JPanel implements KeyListener, Runnable
         keys[e.getKeyCode()] = false;
 
     }
-
+    
+    // respawn/reset game
     public void keyTyped(KeyEvent e)
     {
         if(e.getKeyChar() == 'r' || e.getKeyChar()== 'R'){

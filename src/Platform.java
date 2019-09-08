@@ -1,18 +1,17 @@
-
-import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
 import javax.imageio.*;
-import java.io.*;
 
+
+// class for static dirt platforms
 public class Platform extends Collidable
 {
     private BufferedImage image;
-    private boolean jumpTransparency = false; //if false means player can not jump onto platform from underneath
 
     public Platform(int c, int r)
     {
-        super(new Rectangle(c*20,r*20,20,20)); //platform width and height debatable
+    	// platform coordinates, width, and height
+        super(new Rectangle(c*20,r*20,20,20));
 
         try
         {

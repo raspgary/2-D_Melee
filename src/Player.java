@@ -1,20 +1,11 @@
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.applet.*;
-import java.net.URL;
 import java.util.Random;
 
-/**
- * Created by othscs021 on 8/29/2016.
- */
+// a class to represent one of the two players
+// sets status of players based on keys or outside force
 public class Player extends Collidable{
 
     private int direction;
@@ -46,7 +37,7 @@ public class Player extends Collidable{
     private int lives;
     private Random randomGenerator = new Random();
 
-
+    // player states
     public static final int BLUE            = 0;
     public static final int RED             = 1;
     public static final int JUMP_LEFT       = 4;
@@ -66,10 +57,14 @@ public class Player extends Collidable{
     public static final int IS_HIT_RIGHT          = 19;
     public static final int WIDTH = 22;
     public static final int HEIGHT = 54;
+    
+    // physics movements
     public static final double MIN_FALL=1.25;
     public static final double TERMINAL_VEL = 20.0;
+    
     public static final int DAMAGE_CAP = 150;
 
+    // initilaize player
     public Player (MeleeGame game, int x, int y, int color)
     {
 
@@ -91,6 +86,7 @@ public class Player extends Collidable{
 
     }
 
+    // reset players
     public void reset(){
         if(color==BLUE) {
             setRectangle((new Rectangle(100, 9520, 22, 54)));
@@ -134,11 +130,12 @@ public class Player extends Collidable{
         }
     }
 
+    // set player status to punch right and start cool down
     public void punchRight(boolean first)
     {
 
-            moveRect=getRectangle();
-            setMoveRect(new Rectangle((int)getMoveRect().getX()+19,(int)getMoveRect().getY()+20,15,15));
+        moveRect=getRectangle();
+        setMoveRect(new Rectangle((int)getMoveRect().getX()+19,(int)getMoveRect().getY()+20,15,15));
 
         if(first) {
             currentTime = System.currentTimeMillis();
@@ -151,21 +148,11 @@ public class Player extends Collidable{
 
     }
 
+    // set player status to punch left and start cool down
     public void punchLeft(boolean first)
     {
-
-        //for(int x=0;x<horizontalSpeed;x++)
-    //    {
-            moveRect=getRectangle();
-            setMoveRect(new Rectangle((int)getMoveRect().getX()-10-3,(int)getMoveRect().getY()+20,15,15));
-
-      //      if(hitOther()==true)
-      //      {
-     //           setMoveRect(oldRect);
-      //          return;
-        //    }
-
-     //   }
+        moveRect=getRectangle();
+        setMoveRect(new Rectangle((int)getMoveRect().getX()-10-3,(int)getMoveRect().getY()+20,15,15));
         if(first) {
             currentTime = System.currentTimeMillis();
             waitTime = currentTime + 300;
@@ -175,16 +162,11 @@ public class Player extends Collidable{
         cooling=true;
     }
 
+    // set player status to kick right and start cool down
     public void kickRight(boolean first)
     {
-
-
-            moveRect=getRectangle();
-            setMoveRect(new Rectangle((int)getMoveRect().getX()+12,(int)getMoveRect().getY()+42,28,10));
-          // setRectangle(new Rectangle((int)(getRectangle().getX()+12), (int)(getRectangle().getY()+17), 42, 35));
-
-
-
+        moveRect=getRectangle();
+        setMoveRect(new Rectangle((int)getMoveRect().getX()+12,(int)getMoveRect().getY()+42,28,10));
         if(first) {
             currentTime = System.currentTimeMillis();
             waitTime = currentTime + 400;
@@ -195,13 +177,12 @@ public class Player extends Collidable{
     }
 
 
-
+    // set player status to kick left and start cool down
     public void kickLeft(boolean first)
     {
 
-            moveRect=getRectangle();
-            setMoveRect(new Rectangle((int)getMoveRect().getX()-20,(int)getMoveRect().getY()+42,28,10));
-           // setRectangle(new Rectangle((int)(getRectangle().getX()-20), (int)(getRectangle().getY()+17), 42, 35));
+        moveRect=getRectangle();
+        setMoveRect(new Rectangle((int)getMoveRect().getX()-20,(int)getMoveRect().getY()+42,28,10));
 
         if(first) {
             currentTime = System.currentTimeMillis();
@@ -211,15 +192,19 @@ public class Player extends Collidable{
         setMoveStatus(KICK_LEFT);
         cooling=true;
     }
+    
+    // set player status to block left and start cool down
     public void blockLeft()
     {
 
-            moveRect=getRectangle();
+        moveRect=getRectangle();
 
-            setMoveRect(new Rectangle((int)getMoveRect().getX()-10+5,(int)getMoveRect().getY()+15,10,20));
+        setMoveRect(new Rectangle((int)getMoveRect().getX()-10+5,(int)getMoveRect().getY()+15,10,20));
 
         setMoveStatus(BLOCK_LEFT);
     }
+    
+    // set player status to block right and start cool down
     public void blockRight()
     {
 
@@ -235,7 +220,6 @@ public class Player extends Collidable{
     {
         if(rekt.intersects(getRectangle()))
         {
-           // AudioPlayer.player.start(audioStream_hurt);
             return true;
         }
         return false;
@@ -245,13 +229,12 @@ public class Player extends Collidable{
     {
         if(moveRect.intersects(rekt))
         {
-            //AudioPlayer.player.start(audioStream_hit);
-           // SoundEffect.HIT.play();
             return true;
         }
         return false;
     }
 
+    // falling off platform from left
     public void endLeft()
     {
         if(checkOnGround()!=null){
@@ -263,6 +246,8 @@ public class Player extends Collidable{
         setMoveRect(new Rectangle(0,0,0,0));
 
     }
+    
+    // falling off platform from right
     public void endRight()
     {
         if(checkOnGround()!=null){
@@ -279,6 +264,7 @@ public class Player extends Collidable{
         this.speed = speed;
     }
 
+    
     private void moveLeft()
     {
         ArrayList<Collidable> items = game.getCollidables();
@@ -288,7 +274,8 @@ public class Player extends Collidable{
             for(int x=0;x<horizontalSpeed-3;x++)
             {
                 Rectangle oldRect = getRectangle();
-                setRectangle(new Rectangle((int)getRectangle().getX()-speed,(int)getRectangle().getY(),(int)getRectangle().getWidth(),(int)getRectangle().getHeight()));
+                setRectangle(new Rectangle((int)getRectangle().getX()-speed,(int)getRectangle().getY(),
+                		(int)getRectangle().getWidth(),(int)getRectangle().getHeight()));
 
                 if(hitOther()==true)
                 {
@@ -301,7 +288,8 @@ public class Player extends Collidable{
         else {
             for (int x = 0; x < horizontalSpeed; x++) {
                 Rectangle oldRect = getRectangle();
-                setRectangle(new Rectangle((int) getRectangle().getX() - speed, (int) getRectangle().getY(), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
+                setRectangle(new Rectangle((int) getRectangle().getX() - speed, (int) getRectangle().getY(), 
+                		(int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
 
                 if (hitOther() == true) {
                     setRectangle(oldRect);
@@ -336,7 +324,8 @@ public class Player extends Collidable{
             for(int x=0;x<horizontalSpeed-3;x++)
             {
                 Rectangle oldRect = getRectangle();
-                setRectangle(new Rectangle((int)getRectangle().getX()+speed,(int)getRectangle().getY(),(int)getRectangle().getWidth(),(int)getRectangle().getHeight()));
+                setRectangle(new Rectangle((int)getRectangle().getX()+speed,(int)getRectangle().getY(),
+                		(int)getRectangle().getWidth(),(int)getRectangle().getHeight()));
 
                 if(hitOther()==true)
                 {
@@ -349,7 +338,8 @@ public class Player extends Collidable{
         else {
             for (int x = 0; x < horizontalSpeed; x++) {
                 Rectangle oldRect = getRectangle();
-                setRectangle(new Rectangle((int) getRectangle().getX() + speed, (int) getRectangle().getY(), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
+                setRectangle(new Rectangle((int) getRectangle().getX() + speed, (int) getRectangle().getY(), 
+                		(int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
 
                 if (hitOther() == true) {
                     setRectangle(oldRect);
@@ -379,39 +369,22 @@ public class Player extends Collidable{
 
     }
 
-
-        public void startJump() {
-            if (checkOnGround() != null) {
-                //  System.out.println("JUMPED");
-                Collidable g = checkOnGround();
-                if (g instanceof MovingPlatform) {
-                    MovingPlatform p = (MovingPlatform) g;
-                    if (getMoveStatus() != BLOCK_LEFT && getMoveStatus() != BLOCK_RIGHT) {
-                        if (p.getDirection() == MovingPlatform.UP) {
-                            if(color==BLUE) {
-                                SoundEffect.JUMP.play();
-                            }
-                            else{
-                                SoundEffect.JUMP2.play();
-                            }
-                            velocityY = -20.0 - (p.getSpeed() * -1);
-                        } else {
-                            if(color==BLUE) {
-                                SoundEffect.JUMP.play();
-                            }
-                            else{
-                                SoundEffect.JUMP2.play();
-                            }
-                            velocityY = -20.0;
+    // start jump so it goes higher longer the key is pressed
+    public void startJump() {
+        if (checkOnGround() != null) {
+            Collidable g = checkOnGround();
+            if (g instanceof MovingPlatform) {
+                MovingPlatform p = (MovingPlatform) g;
+                if (getMoveStatus() != BLOCK_LEFT && getMoveStatus() != BLOCK_RIGHT) {
+                    if (p.getDirection() == MovingPlatform.UP) {
+                        if(color==BLUE) {
+                            SoundEffect.JUMP.play();
                         }
-                    } /*else {
-                        if (p.getDirection() == MovingPlatform.UP) {
-                            velocityY = -10.0 - (p.getSpeed() * -1);
-                        } else {
-                            velocityY = -10.0;
-                        }*/
-                } else {
-                    if (getMoveStatus() != BLOCK_LEFT && getMoveStatus() != BLOCK_RIGHT) {
+                        else{
+                            SoundEffect.JUMP2.play();
+                        }
+                        velocityY = -20.0 - (p.getSpeed() * -1);
+                    } else {
                         if(color==BLUE) {
                             SoundEffect.JUMP.play();
                         }
@@ -419,87 +392,85 @@ public class Player extends Collidable{
                             SoundEffect.JUMP2.play();
                         }
                         velocityY = -20.0;
-                    } /*else {
-                        velocityY = -10.0;
-                    }*/
-                }
-                //@@@@@@    justJumped=true; do something to call endJump only when you jumped
-
-
-                // shouldJump=true;
-                //
-                //
-                // onGround = false;
-                if (getMoveStatus() == MOVE_RIGHT) {
-                    setMoveStatus(JUMP_RIGHT);
-                } else if (getMoveStatus() == MOVE_LEFT) {
-                    setMoveStatus(JUMP_LEFT);
-                }
-
-                justJumped = true;
-
+                    }
+                } 
+            } else {
+                if (getMoveStatus() != BLOCK_LEFT && getMoveStatus() != BLOCK_RIGHT) {
+                    if(color==BLUE) {
+                        SoundEffect.JUMP.play();
+                    }
+                    else{
+                        SoundEffect.JUMP2.play();
+                    }
+                    velocityY = -20.0;
+                } 
             }
-        }
-
-        public void endJump()
-        {
-            if(justJumped) {
-                if (velocityY < -12.5)
-                    velocityY = -12.5;
+           
+            if (getMoveStatus() == MOVE_RIGHT) {
+                setMoveStatus(JUMP_RIGHT);
+            } else if (getMoveStatus() == MOVE_LEFT) {
+                setMoveStatus(JUMP_LEFT);
             }
 
-            justJumped=false;
+            justJumped = true;
+
+        }
+    }
+
+    // begin to fall down
+    public void endJump()
+    {
+        if(justJumped) {
+            if (velocityY < -12.5)
+                velocityY = -12.5;
         }
 
-        public void getHit(int damageTaken){
-            if(justRekt==false){
-                damage+=damageTaken;
-                if(color==BLUE){
-                    SoundEffect.HURT.play();
-                }
-                else{
-                    SoundEffect.HURT2.play();
-                }
-                if (damage >=DAMAGE_CAP) {
-                    damage=DAMAGE_CAP;
-                   isDead=true;
-                }
-                else {
-                    immunityTime = System.currentTimeMillis() + 250;
-                    justRekt = true;
-                }
-               // System.out.println("justrekt is true");
+        justJumped=false;
+    }
+
+    // player gets hurt and immunity timer is set
+    public void getHit(int damageTaken){
+        if(justRekt==false){
+            damage+=damageTaken;
+            if(color==BLUE){
+                SoundEffect.HURT.play();
+            }
+            else{
+                SoundEffect.HURT2.play();
+            }
+            if (damage >=DAMAGE_CAP) {
+                damage=DAMAGE_CAP;
+               isDead=true;
+            }
+            else {
+                immunityTime = System.currentTimeMillis() + 250;
+                justRekt = true;
             }
         }
+    }
 
-
-
-
-
-
-
-
-
+    // check if player is on platform
+    // fall down if move off platform
     public void correctGround(){
         Collidable g = checkOnGround();
         if(g!=null) {
-          //  System.out.println("on ground!");
 
             if (g instanceof MovingPlatform) {
                 MovingPlatform p = (MovingPlatform) g;
 
                 if (p.getDirection() == MovingPlatform.UP) {
                     velocityY = MIN_FALL;
-                //    System.out.println("CORRECTED 1");
-                    setRectangle(new Rectangle((int) getRectangle().getX(), (p.getWorldY() - HEIGHT), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
+                    setRectangle(new Rectangle((int) getRectangle().getX(), (p.getWorldY() - HEIGHT), 
+                    		(int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
                 } else {
                     velocityY = MIN_FALL;
-                //    System.out.println("CORRECTED 2");
-                    setRectangle(new Rectangle((int) getRectangle().getX(), (p.getWorldY() - HEIGHT), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
+                    setRectangle(new Rectangle((int) getRectangle().getX(), (p.getWorldY() - HEIGHT), 
+                    		(int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
                 }
              } else {
                 velocityY = MIN_FALL;
-                setRectangle(new Rectangle((int) getRectangle().getX(), (g.getWorldY() - HEIGHT), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
+                setRectangle(new Rectangle((int) getRectangle().getX(), (g.getWorldY() - HEIGHT), 
+                		(int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
             }
             if (moveStatus == JUMP_RIGHT) {
                 setMoveStatus(MOVE_RIGHT);
@@ -510,13 +481,16 @@ public class Player extends Collidable{
         }
     }
 
-
+    
     public void fall()
     {
         if(velocityY>0)
-            setRectangle(new Rectangle((int) getRectangle().getX(), (int) (getRectangle().getY() + 5), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
+            setRectangle(new Rectangle((int) getRectangle().getX(), (int) (getRectangle().getY() + 5), 
+            		(int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
 
     }
+    
+    // set status by key presses
     public void checkBlueKeys(){
         if(MeleePanel.keys[KeyEvent.VK_D])
         {
@@ -538,37 +512,21 @@ public class Player extends Collidable{
             punchLeft(true);
             return;
         }
-      /*  else if(!MeleePanel.keys[KeyEvent.VK_C]&&getDirection()==LEFT )
-        {
-            endLeft();
-        }*/
         if(MeleePanel.keys[KeyEvent.VK_C]&&getDirection()==RIGHT && !cooling && !blocking && getHitStatus()==NOT_HIT)
         {
             punchRight(true);
             return;
         }
-      /*  else if(!MeleePanel.keys[KeyEvent.VK_C]&&getDirection()==RIGHT )
-        {
-            endRight();
-        }*/
         if(MeleePanel.keys[KeyEvent.VK_V]&&getDirection()==LEFT && !cooling && !blocking && getHitStatus()==NOT_HIT)
         {
             kickLeft(true);
             return;
         }
-      /*   else if(!MeleePanel.keys[KeyEvent.VK_V]&&getDirection()==LEFT )
-        {
-            endLeft();
-        } */
         if(MeleePanel.keys[KeyEvent.VK_V]&&getDirection()==RIGHT && !cooling && !blocking && getHitStatus()==NOT_HIT)
         {
             kickRight(true);
             return;
         }
-      /*  else if(!MeleePanel.keys[KeyEvent.VK_V]&&getDirection()==RIGHT)
-        {
-            endRight();
-        } */
         if(MeleePanel.keys[KeyEvent.VK_B]&&getDirection()==LEFT )
         {
             blockLeft();
@@ -668,61 +626,64 @@ public class Player extends Collidable{
          }
 
     }
+    
+    // updates player continuously
     public void update()
     {
-        //correctMovingPlatforms();
+    	
+    	
         if(isDead){
             return;
         }
 
 
-            checkKeys();
+        checkKeys();
 
-            if(justRekt){
-                if(System.currentTimeMillis()>=immunityTime) {
-                    setHitStatus(Player.NOT_HIT);
-            //        System.out.println("justrekt is false");
-                    justRekt = false;
+        // handle immunity
+        if(justRekt){
+            if(System.currentTimeMillis()>=immunityTime) {
+                setHitStatus(Player.NOT_HIT);
+                justRekt = false;
+            }
+        }
+        
+        // set cooldown
+
+        if(cooling)
+        {
+            if(System.currentTimeMillis()>=waitTime2){
+                cooling=false;
+            }
+            else if(System.currentTimeMillis()>waitTime){
+                if(moveStatus==PUNCH_LEFT){
+                    endLeft();
+                }
+                else if(moveStatus==PUNCH_RIGHT){
+                    endRight();
+                }
+                else if(moveStatus==KICK_LEFT){
+                    endLeft();
+                }
+                else if(moveStatus==KICK_RIGHT){
+                    endRight();
                 }
             }
+        }
 
-            if(cooling)
-            {
-            //    System.out.println("you are doing an action");
-                if(System.currentTimeMillis()>=waitTime2){
-                    cooling=false;
-             //       System.out.println("You are done cooling");
-                }
-                else if(System.currentTimeMillis()>waitTime){
-                    if(moveStatus==PUNCH_LEFT){
-                        endLeft();
-                    }
-                    else if(moveStatus==PUNCH_RIGHT){
-                        endRight();
-                    }
-                    else if(moveStatus==KICK_LEFT){
-                        endLeft();
-                    }
-                    else if(moveStatus==KICK_RIGHT){
-                        endRight();
-                    }
-                }
-            }
+        if(moveStatus==KICK_LEFT){
+            kickLeft(false);
+        }
+        else if(moveStatus==KICK_RIGHT){
+            kickRight(false);
+        }
+        else if(moveStatus==PUNCH_LEFT){
+            punchLeft(false);
+        }
+        else if(moveStatus==PUNCH_RIGHT){
+            punchRight(false);
+        }
 
-            if(moveStatus==KICK_LEFT){
-                kickLeft(false);
-            }
-            else if(moveStatus==KICK_RIGHT){
-                kickRight(false);
-            }
-            else if(moveStatus==PUNCH_LEFT){
-                punchLeft(false);
-            }
-            else if(moveStatus==PUNCH_RIGHT){
-                punchRight(false);
-            }
-
-               velocityY += gravity;
+        velocityY += gravity;
 
 
         if(velocityY>= TERMINAL_VEL){
@@ -732,92 +693,50 @@ public class Player extends Collidable{
             velocityY=TERMINAL_VEL*-1;
         }
 
-            setRectangle(new Rectangle((int) getRectangle().getX(), (int) (getRectangle().getY() + velocityY), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
-            knockBackHorizontal();
+        setRectangle(new Rectangle((int) getRectangle().getX(), (int) (getRectangle().getY() + velocityY), 
+        		(int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
+        knockBackHorizontal();
 
-          //  System.out.println(getWorldX()+", "+getWorldY());
-            if(checkOnHead()!=null){
-                if(checkOnHead() instanceof MovingPlatform){
-                    MovingPlatform p = (MovingPlatform) checkOnHead();
-                    if(checkOnGround()!=null && p.getDirection()==MovingPlatform.DOWN){
-                        int midpoint = p.getWorldX()+p.getWidth()/2;
-                        if(getWorldX()<midpoint){ //player is left to moving platform
-                            while(p.getRectangle().intersects(getRectangle())) {
-                                setRectangle(new Rectangle((int) getRectangle().getX() - 1, (int) getRectangle().getY(), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
-                            }
-                        }
-                        else{
-                            while(p.getRectangle().intersects(getRectangle())) {
-                                setRectangle(new Rectangle((int) getRectangle().getX()+1, (int) getRectangle().getY(), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
-                            }
+        if(checkOnHead()!=null){
+        	// makes sure player head doesn't get stuck on moving platform
+            if(checkOnHead() instanceof MovingPlatform){
+                MovingPlatform p = (MovingPlatform) checkOnHead();
+                if(checkOnGround()!=null && p.getDirection()==MovingPlatform.DOWN){
+                    int midpoint = p.getWorldX()+p.getWidth()/2;
+                    //player is left to moving platform
+                    if(getWorldX()<midpoint){ 
+                        while(p.getRectangle().intersects(getRectangle())) {
+                            setRectangle(new Rectangle((int) getRectangle().getX() - 1, 
+                            		(int) getRectangle().getY(), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
                         }
                     }
-                    else {
-                        if (velocityY < 0) {
-                            velocityY = MIN_FALL;
+                    else{
+                        while(p.getRectangle().intersects(getRectangle())) {
+                            setRectangle(new Rectangle((int) getRectangle().getX()+1, 
+                            		(int) getRectangle().getY(), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
                         }
-                        setRectangle(new Rectangle((int) getRectangle().getX(), (p.getWorldY() + p.getHeight() + 1), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
                     }
                 }
                 else {
-                    velocityY = MIN_FALL;
-                    setRectangle(new Rectangle((int) getRectangle().getX(), (checkOnHead().getWorldY() + (int) checkOnHead().getRectangle().getHeight() + 1), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
+                    if (velocityY < 0) {
+                        velocityY = MIN_FALL;
+                    }
+                    setRectangle(new Rectangle((int) getRectangle().getX(), 
+                    		(p.getWorldY() + p.getHeight() + 1), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
                 }
-
             }
-            correctGround();
-/*
-            velocityY += gravity;
-            Rectangle oldRect = getRectangle();
-            tempRect2=(new Rectangle((int) getRectangle().getX(), (int) (getRectangle().getY() + velocityY), (int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
-        // x += velocityX;
-
-        if(checkOnGround() && !shouldJump)
-        {
-             velocityY=0;
-            if(moveStatus==JUMP_LEFT)
-            {
-                setMoveStatus(MOVE_LEFT);
+            else {
+                velocityY = MIN_FALL;
+                setRectangle(new Rectangle((int) getRectangle().getX(), 
+                		(checkOnHead().getWorldY() + (int) checkOnHead().getRectangle().getHeight() + 1), 
+                		(int) getRectangle().getWidth(), (int) getRectangle().getHeight()));
             }
-            else if (moveStatus==JUMP_RIGHT)
-            {
-                setMoveStatus(MOVE_RIGHT);
-            }
-            setRectangle(oldRect);
-        }
-        else{
-            setRectangle(tempRect2);
-            shouldJump=false;
-        }
 
-        if(left == true)
-        {
-            moveLeft();
         }
-        else if (right == true)
-        {
-            moveRight();
-        }
-
-        //if(getDirection() == JUMP)
-        //{
-          //  jump
-
-        //}
-        /*if(jumping==true)
-        {
-            jumpCounter++;
-            moveUp();
-
-            if(jumpCounter==MAX_JUMP_TIMES)
-                jumping = false;
-        }
-        else*/
-     //   {
-
-      //  }
+        correctGround();
     }
 
+    // sets velocity of player from knockback
     public void knockBackHorizontal(){
         if(velocityX!=0){
             double acceleration;
@@ -836,7 +755,8 @@ public class Player extends Collidable{
             }
 
             Rectangle oldRect = getRectangle();
-            setRectangle(new Rectangle((int)(getRectangle().getX()+velocityX),(int)getRectangle().getY(),(int)getRectangle().getWidth(),(int)getRectangle().getHeight()));
+            setRectangle(new Rectangle((int)(getRectangle().getX()+velocityX),(int)getRectangle().getY(),
+            		(int)getRectangle().getWidth(),(int)getRectangle().getHeight()));
             if(hitOther()==true)
             {
                 setRectangle(oldRect);
@@ -853,40 +773,23 @@ public class Player extends Collidable{
         }
     }
 
+    // check if player is on the ground
+    // uses small hit box	
     public Collidable checkOnGround()
     {
-        /*double oldX = old.getX();
-        double oldY = old.getY();
-        double oldWidth = old.getWidth();
-        double oldHeight = old.getHeight();
-
-        double newX = getRectangle().getX();
-        double newY = getRectangle().getY();
-        double newWidth = getRectangle().getWidth();
-        double newHeight = getRectangle().getHeight();
-
-        double width = Math.abs(newX-oldX);
-        double height = Math.abs()*/
-
         tempRect=(new Rectangle((int)getRectangle().getX(),(int)(getRectangle().getY()+getRectangle().getHeight()),22,1));
-       /* if(hitOther(tempRect)!=null)
-        {
-            //System.out.println("you are on ground");
-            //velocityY=0;
-            return true;
-        }
-        //setRectangle(oldRect);
-        return false;*/
-       return hitOther(tempRect);
+        return hitOther(tempRect);
     }
-
+    // return where the feet are
+    // uses small hit box
     public Collidable getFeetCheck(){
         return new Collidable(new Rectangle((int)getRectangle().getX(),(int)(getRectangle().getY()+getRectangle().getHeight()),22,1));
     }
 
+    // return where the head is
+    // uses small hit box
     public Collidable checkOnHead()
     {
-
         tempRect2=(new Rectangle((int)getRectangle().getX(),(int)(getRectangle().getY()-1),(int)getRectangle().getWidth(),2));
         return hitOther(tempRect2);
     }
@@ -914,6 +817,7 @@ public class Player extends Collidable{
         return null;
     }
 
+    // called when a player dies
     public void die(){
         lives--;
         isDead=true;
@@ -924,17 +828,19 @@ public class Player extends Collidable{
         else{
             otherLives = game.getPlayer1().getLives();
         }
+        // speed up if one life left
         if(lives==1 || lives==1 && otherLives==1){
             game.setSpeed(game.getSpeed()+0.75);
             MeleePanel.songPlayer.setTempoFactor(1.25F);
         }
-        //System.out{.println(color+" LIVES:"+lives);
+        // play sound effects
         if(color==BLUE){
             SoundEffect.EXPLODE.play();
         }
         else {
             SoundEffect.EXPLODE2.play();
         }
+        // checks if game is over
         if(lives<=0 && color==BLUE) {
             if(game.getStatus()==game.PLAYING) {
                 game.setStatus(MeleeGame.RED_WINS);
@@ -950,6 +856,7 @@ public class Player extends Collidable{
         }
     }
 
+    // respawns dead player at random spot on map
     public void respawn(){
         int gameY=game.getWorldY();
         int lowerLimit=gameY+700; //appears larger than upperlimit in the grid coord
@@ -957,13 +864,9 @@ public class Player extends Collidable{
         int lowerCoord=(lowerLimit-lowerLimit%20)/20; //rounds to the nearest coordinate
         int upperCoord=(upperLimit-upperLimit%20)/20;
         ArrayList<Collidable> potentialSpawns = game.getValidCollidables(upperCoord, lowerCoord);
-       // System.out.println(lowerCoord+" "+upperCoord);
-      //  System.out.println("SIZE "+potentialSpawns.size());
         int random = randomGenerator.nextInt(potentialSpawns.size());
         int spawnX = potentialSpawns.get(random).getWorldX();
         int spawnY = potentialSpawns.get(random).getWorldY()-HEIGHT;
-     //   System.out.println(upperCoord+" "+lowerCoord);
-     //   System.out.println("SPAWN "+spawnX+" "+spawnY);
         setRectangle((new Rectangle(spawnX, spawnY, 22, 54)));
         setMoveRect(new Rectangle(00, 00, 22, 54));
         isDead=false;
@@ -1091,8 +994,6 @@ public class Player extends Collidable{
     }
 
     public int getLives() {
-        /*if(lives==0)
-            moveStatus=DEAD;*/
         return lives;
     }
 
